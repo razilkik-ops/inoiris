@@ -1,0 +1,27 @@
+<article class="product-card">
+  <a href="/products/<%= product.slug %>">
+    <img src="<%= product.images[0]?.url || '/uploads/seed-product-1.svg' %>" alt="<%= product.title %>">
+  </a>
+  <div class="product-card-body">
+    <a class="product-title" href="/products/<%= product.slug %>"><%= product.title %></a>
+    <span class="muted"><%= product.category?.name || '' %></span>
+    <div class="price-row">
+      <% if (product.salePrice && Number(product.salePrice) < Number(product.price)) { %>
+        <strong><%= formatPrice(product.salePrice) %></strong>
+        <del><%= formatPrice(product.price) %></del>
+      <% } else { %>
+        <strong><%= formatPrice(product.price) %></strong>
+      <% } %>
+    </div>
+    <div class="card-actions">
+      <a class="button small" href="/products/<%= product.slug %>">Подробнее</a>
+      <% if (currentUser) { %>
+        <form method="post" action="/favorites/add">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <button class="icon-button" title="В избранное" type="submit">♡</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</article>

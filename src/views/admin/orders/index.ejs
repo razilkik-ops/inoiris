@@ -1,0 +1,10 @@
+<div class="admin-head"><h1>Заказы</h1></div>
+<form class="admin-card inline-fields" method="get" action="/admin/orders">
+  <select name="status"><option value="">Все статусы</option><% ['NEW','PROCESSING','SHIPPED','DELIVERED','CANCELLED'].forEach((s) => { %><option value="<%= s %>" <%= query.status===s?'selected':'' %>><%= s %></option><% }) %></select>
+  <button class="button" type="submit">Фильтр</button>
+</form>
+<section class="admin-card">
+  <table><thead><tr><th>№</th><th>Покупатель</th><th>Статус</th><th>Оплата</th><th>Сумма</th><th></th></tr></thead><tbody>
+    <% orders.forEach((order) => { %><tr><td>#<%= order.id %></td><td><%= order.customerName %><br><span class="muted"><%= order.customerPhone %></span></td><td><span class="badge"><%= order.status %></span></td><td><%= order.paymentStatus %></td><td><%= formatPrice(order.total) %></td><td><a href="/admin/orders/<%= order.id %>">Открыть</a></td></tr><% }) %>
+  </tbody></table>
+</section>

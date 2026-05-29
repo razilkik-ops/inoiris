@@ -1,0 +1,12 @@
+<div class="admin-head"><h1>Редактировать промокод</h1><a href="/admin/promocodes">Назад</a></div>
+<form class="admin-card form-grid" method="post" action="/admin/promocodes/<%= promo.id %>">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Код<input name="code" value="<%= promo.code %>" required></label>
+  <label>Тип<select name="type"><option value="PERCENT" <%= promo.type==='PERCENT'?'selected':'' %>>Процент</option><option value="FIXED" <%= promo.type==='FIXED'?'selected':'' %>>Фиксированная</option></select></label>
+  <label>Значение<input type="number" step="0.01" name="value" value="<%= promo.value %>" required></label>
+  <label>Начало<input type="date" name="startsAt" value="<%= promo.startsAt.toISOString().slice(0,10) %>" required></label>
+  <label>Конец<input type="date" name="endsAt" value="<%= promo.endsAt.toISOString().slice(0,10) %>" required></label>
+  <label>Лимит<input type="number" name="usageLimit" value="<%= promo.usageLimit || '' %>"></label>
+  <label class="check"><input type="checkbox" name="isActive" <%= promo.isActive?'checked':'' %>> Активен</label>
+  <button class="button" type="submit">Сохранить</button>
+</form>

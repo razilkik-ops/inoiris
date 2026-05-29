@@ -1,0 +1,11 @@
+<section class="auth-card">
+  <h1>Регистрация</h1>
+  <form method="post" action="/register">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label>Имя<input name="name" required minlength="2"></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Телефон<input name="phone"></label>
+    <label>Пароль<input type="password" name="password" required minlength="8"></label>
+    <button class="button" type="submit">Создать аккаунт</button>
+  </form>
+</section>

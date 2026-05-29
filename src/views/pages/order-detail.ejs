@@ -1,0 +1,10 @@
+<div class="section-head"><h1>Заказ №<%= order.id %></h1><a href="/profile/orders">Назад</a></div>
+<section class="panel">
+  <p><strong>Статус:</strong> <%= order.status %>, оплата: <%= order.paymentStatus %></p>
+  <p><strong>Адрес:</strong> <%= order.city %>, <%= order.address %></p>
+  <table>
+    <thead><tr><th>Товар</th><th>Размер</th><th>Цвет</th><th>Цена</th><th>Кол-во</th></tr></thead>
+    <tbody><% order.items.forEach((item) => { %><tr><td><%= item.title %></td><td><%= item.sizeName %></td><td><%= item.colorName %></td><td><%= formatPrice(item.price) %></td><td><%= item.quantity %></td></tr><% }) %></tbody>
+  </table>
+  <div class="summary compact"><div><span>Сумма</span><strong><%= formatPrice(order.subtotal) %></strong></div><div><span>Скидка</span><strong><%= formatPrice(order.discount) %></strong></div><div class="total"><span>Итого</span><strong><%= formatPrice(order.total) %></strong></div></div>
+</section>

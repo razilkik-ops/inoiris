@@ -1,0 +1,167 @@
+<%
+  const catalogPhotos = [
+    '/uploads/promo-jacket-boys.png',
+    '/uploads/promo-jacket-girls.png',
+    '/uploads/promo-jacket-boys.png',
+    '/uploads/new-arrival-arctic-blue.png',
+    '/uploads/catalog/polar-star.jpg',
+    '/uploads/catalog/pink-frost.jpg',
+    '/uploads/promo-jacket-new.png',
+    '/uploads/catalog/midnight-shield.jpg'
+  ];
+  const photoRules = [
+    { test: /ботин|сапог|boot|walk|step/i, image: '/uploads/catalog/product-boots.jpg' },
+    { test: /шлем|шап|hat|head|bear|cozy/i, image: '/uploads/catalog/product-helmet.jpg' },
+    { test: /вареж|перчат|glove|mitten|ice/i, image: '/uploads/catalog/product-gloves.jpg' },
+    { test: /термо|layer|soft/i, image: '/uploads/catalog/product-thermal.jpg' },
+    { test: /pink|rose|berry|роз|дев|frost/i, image: '/uploads/promo-jacket-girls.png' },
+    { test: /forest|green|trail|зел/i, image: '/uploads/promo-jacket-new.png' },
+    { test: /arctic/i, image: '/uploads/new-arrival-arctic-blue.png' },
+    { test: /snow|patrol|снег/i, image: '/uploads/promo-jacket-boys.png' },
+    { test: /nord|polar|син/i, image: '/uploads/promo-jacket-boys.png' }
+  ];
+  const productPhoto = (product, index) => {
+    const image = product.images?.[0]?.url;
+    if (image && !image.includes('seed-product')) return image;
+    const key = `${product.slug || ''} ${product.title || ''}`;
+    return photoRules.find((rule) => rule.test.test(key))?.image || catalogPhotos[index % catalogPhotos.length];
+  };
+  const badgeFor = (product, index) => product.isBestseller ? 'Хит' : (product.isNew || index % 3 === 0 ? 'Новинка' : '');
+  const genderLabel = { BOYS: 'Для мальчиков', GIRLS: 'Для девочек', UNISEX: 'Для всех' };
+  const sortLabel = query.sort === 'price_asc' ? 'Цена ↑' : query.sort === 'price_desc' ? 'Цена ↓' : query.sort === 'new' ? 'По новизне' : 'По популярности';
+  const minPriceVal = Number(query.minPrice || 60);
+  const maxPriceVal = Number(query.maxPrice || 220);
+  const ageOptions = ['1-3 года', '2-8 лет', '3-6 лет', '3-10 лет', '4-7 лет', '4-9 лет', '5-10 лет', '6-10 лет'];
+  const tempOptions = ['до -18', 'до -20', 'до -25', 'от -5 до -20', 'от -5 до -25', 'от -5 до -30', 'от -10 до -25', 'базовый слой'];
+%>
+
+<div class="catalog-hero-head">
+  <h1>Каталог</h1>
+  <span><%= total %> товаров</span>
+</div>
+
+<div class="catalog-showcase">
+  <aside class="catalog-filter-card">
+    <form method="get" action="/catalog" data-live-filters>
+      <label class="catalog-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.2-4.2"/></svg>
+        <input name="q" value="<%= query.q || '' %>" placeholder="Поиск по названию">
+      </label>
+
+      <label class="filter-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg></span>
+        <span><b>Категория</b><select name="category"><option value="">Все куртки</option><% categories.forEach((category) => { %><option value="<%= category.id %>" <%= String(query.category)===String(category.id)?'selected':'' %>><%= category.name %></option><% }) %></select></span>
+        <em>⌄</em>
+      </label>
+
+      <label class="filter-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.4-4 4.2-6 7-6s5.6 2 7 6"/></svg></span>
+        <span><b>Пол</b><select name="gender"><option value="">Для всех</option><option value="BOYS" <%= query.gender==='BOYS'?'selected':'' %>>Мальчики</option><option value="GIRLS" <%= query.gender==='GIRLS'?'selected':'' %>>Девочки</option><option value="UNISEX" <%= query.gender==='UNISEX'?'selected':'' %>>Унисекс</option></select></span>
+        <em>⌄</em>
+      </label>
+
+      <label class="filter-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="M7 3v4M17 3v4M4 8h16M5 5h14v15H5z"/></svg></span>
+        <span><b>Возраст</b><select name="ageGroup"><option value="">Любой возраст</option><% ageOptions.forEach((age) => { %><option value="<%= age %>" <%= query.ageGroup===age?'selected':'' %>><%= age %></option><% }) %></select></span>
+        <em>⌄</em>
+      </label>
+
+      <label class="filter-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="m8 3 8 2-2 16-8-2L8 3Z"/><path d="m10 7 4 1"/></svg></span>
+        <span><b>Размер</b><select name="size"><option value="">Выберите размер</option><% sizes.forEach((size) => { %><option value="<%= size.id %>" <%= String(query.size)===String(size.id)?'selected':'' %>><%= size.name %></option><% }) %></select></span>
+        <em>⌄</em>
+      </label>
+
+      <div class="filter-row color-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18h1.5a2 2 0 0 0 .4-4h-.8a1.8 1.8 0 0 1 0-3.6H15a6 6 0 0 0 0-12h-3Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="14" cy="7.5" r="1"/></svg></span>
+        <span><b>Цвет</b><span class="catalog-swatches"><% colors.slice(0, 7).forEach((color) => { %><label title="<%= color.name %>"><input type="radio" name="color" value="<%= color.id %>" <%= String(query.color)===String(color.id)?'checked':'' %>><i style="background:<%= color.hex %>"></i></label><% }) %></span></span>
+      </div>
+
+      <div class="filter-row price-row-filter">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="m20 12-8 8-8-8 8-8h8v8Z"/><circle cx="16" cy="8" r="1.5"/></svg></span>
+        <span>
+          <b>Цена</b>
+          <span class="price-values"><output data-price-min><%= minPriceVal %></output><output data-price-max><%= maxPriceVal %></output></span>
+          <span class="price-slider" data-price-slider>
+            <span class="price-track"></span>
+            <input type="range" name="minPrice" min="0" max="300" step="5" value="<%= minPriceVal %>" aria-label="Минимальная цена">
+            <input type="range" name="maxPrice" min="0" max="300" step="5" value="<%= maxPriceVal %>" aria-label="Максимальная цена">
+          </span>
+        </span>
+      </div>
+
+      <label class="filter-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="M10 14.4V5a2 2 0 0 1 4 0v9.4a5 5 0 1 1-4 0Z"/></svg></span>
+        <span><b>Температурный режим</b><select name="temperatureRange"><option value="">Любой режим</option><% tempOptions.forEach((temp) => { %><option value="<%= temp %>" <%= query.temperatureRange===temp?'selected':'' %>><%= temp %></option><% }) %></select></span>
+        <em>⌄</em>
+      </label>
+
+      <label class="filter-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M4.5 6.5l15 11M19.5 6.5l-15 11M5 12h14"/></svg></span>
+        <span><b>Сезон</b><select name="season"><option value="">Любой сезон</option><option value="Зима" <%= (query.season || 'Зима')==='Зима'?'selected':'' %>>Зима</option></select></span>
+        <em>⌄</em>
+      </label>
+
+      <label class="filter-row">
+        <span class="filter-icon"><svg viewBox="0 0 24 24"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg></span>
+        <span><b>Сортировка</b><select name="sort"><option value="popular" <%= query.sort==='popular'?'selected':'' %>>По популярности</option><option value="new" <%= query.sort==='new'?'selected':'' %>>По новизне</option><option value="price_asc" <%= query.sort==='price_asc'?'selected':'' %>>Цена ↑</option><option value="price_desc" <%= query.sort==='price_desc'?'selected':'' %>>Цена ↓</option></select></span>
+        <em>⌄</em>
+      </label>
+
+      <div class="catalog-filter-actions">
+        <button class="catalog-apply" type="submit">Применить фильтры <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M8 15v4"/></svg></button>
+        <a class="catalog-reset" href="/catalog">Сбросить фильтры</a>
+      </div>
+    </form>
+  </aside>
+
+  <section class="catalog-products-wrap">
+    <div class="catalog-products-grid">
+      <% products.forEach((product, index) => { const photo = productPhoto(product, index); const badge = badgeFor(product, index); const variant = product.variants.find((v) => v.stock > 0) || product.variants[0]; %>
+        <article class="catalog-product-card">
+          <a class="catalog-product-photo" href="/products/<%= product.slug %>">
+            <img src="<%= photo %>" alt="<%= product.title %>" loading="lazy" decoding="async">
+          </a>
+          <% if (badge) { %><span class="catalog-badge <%= badge === 'Хит' ? 'hit' : '' %>"><%= badge %></span><% } %>
+          <% if (currentUser) { %>
+            <form method="post" action="/favorites/add" class="catalog-heart">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="hidden" name="productId" value="<%= product.id %>">
+              <button type="submit" aria-label="В избранное">♡</button>
+            </form>
+          <% } else { %>
+            <a class="catalog-heart guest" href="/login" aria-label="В избранное">♡</a>
+          <% } %>
+          <div class="catalog-product-info">
+            <a href="/products/<%= product.slug %>"><%= product.title %></a>
+            <p><%= product.category?.name || genderLabel[product.gender] || 'Зимняя куртка' %></p>
+            <div class="catalog-price-line">
+              <div>
+                <strong><%= formatPrice(actualPrice(product)) %></strong>
+                <% if (product.salePrice && Number(product.salePrice) < Number(product.price)) { %><del><%= formatPrice(product.price) %></del><% } else { %><del><%= formatPrice(Number(product.price) + 30) %></del><% } %>
+              </div>
+              <% if (variant) { %>
+                <form method="post" action="/cart/add">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="productId" value="<%= product.id %>">
+                  <input type="hidden" name="variantId" value="<%= variant.id %>">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" aria-label="В корзину"><svg viewBox="0 0 24 24"><path d="M7 8h10l1 13H6L7 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg></button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+    <% if (!products.length) { %><p class="empty">По выбранным фильтрам товаров нет.</p><% } %>
+    <% if (pages > 1) { %>
+      <div class="catalog-pagination">
+        <% for (let p = 1; p <= pages; p++) { const params = new URLSearchParams(query); params.set('page', p); %>
+          <a class="<%= p===page?'active':'' %>" href="/catalog?<%= params.toString() %>"><%= p %></a>
+        <% } %>
+        <% if (page < pages) { const params = new URLSearchParams(query); params.set('page', page + 1); %><a href="/catalog?<%= params.toString() %>">›</a><% } %>
+      </div>
+    <% } %>
+  </section>
+</div>

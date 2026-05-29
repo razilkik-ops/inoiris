@@ -1,0 +1,159 @@
+<%
+  const itemCount = summary.items.reduce((sum, item) => sum + item.quantity, 0);
+  const cartPhotos = [
+    '/uploads/promo-jacket-boys.png',
+    '/uploads/promo-jacket-girls.png',
+    '/uploads/new-arrival-arctic-blue.png',
+    '/uploads/catalog/pink-frost.jpg'
+  ];
+  const photoRules = [
+    { test: /ботин|сапог|boot|walk|step/i, image: '/uploads/catalog/product-boots.jpg' },
+    { test: /шлем|шап|hat|head|bear|cozy/i, image: '/uploads/catalog/product-helmet.jpg' },
+    { test: /вареж|перчат|glove|mitten|ice/i, image: '/uploads/catalog/product-gloves.jpg' },
+    { test: /термо|layer|soft/i, image: '/uploads/catalog/product-thermal.jpg' },
+    { test: /pink|rose|berry|роз|дев|frost/i, image: '/uploads/promo-jacket-girls.png' },
+    { test: /forest|green|trail|зел/i, image: '/uploads/promo-jacket-new.png' },
+    { test: /arctic/i, image: '/uploads/new-arrival-arctic-blue.png' },
+    { test: /snow|patrol|снег|сапог/i, image: '/uploads/promo-jacket-boys.png' },
+    { test: /nord|polar|син/i, image: '/uploads/promo-jacket-boys.png' }
+  ];
+  const productPhoto = (product, index, pool = cartPhotos) => {
+    const image = product.images?.[0]?.url;
+    if (image && !image.includes('seed-product')) return image;
+    const key = `${product.slug || ''} ${product.title || ''}`;
+    return photoRules.find((rule) => rule.test.test(key))?.image || pool[index % pool.length];
+  };
+
+  const recommendedItems = (recommendations || []).filter((product) => product.variants?.[0]);
+
+  const icon = {
+    check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',
+    size: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v5M17 3v5M4 7h16M8 11l-4 4 4 4M16 11l4 4-4 4M12 5v14"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg>',
+    truck: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 15h22v18H7zM29 21h7l5 6v6H29zM14 37a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM34 37a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>',
+    refresh: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M38 17a15 15 0 0 0-25-4l-4 4M10 31a15 15 0 0 0 25 4l4-4M9 9v8h8M39 39v-8h-8"/></svg>',
+    shield: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6 39 12v10c0 10-6 17-15 21C15 39 9 32 9 22V12l15-6Z"/></svg>',
+    lock: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 22h20v18H14zM18 22v-6a6 6 0 0 1 12 0v6M24 29v5"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    bag: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 13H7L6 8ZM9 8a3 3 0 0 1 6 0"/></svg>',
+    info: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>'
+  };
+%>
+
+<% if (!summary.items.length) { %>
+  <section class="cart-empty panel">
+    <h1>Корзина</h1>
+    <p>Корзина пуста.</p>
+    <a class="button" href="/catalog">Перейти в каталог</a>
+  </section>
+<% } else { %>
+  <section class="cart-page">
+    <div class="cart-content">
+      <section class="cart-items-panel" aria-label="Товары в корзине">
+        <% summary.items.forEach((item, index) => { %>
+          <article class="cart-item">
+            <img class="cart-item-image" src="<%= productPhoto(item.product, index) %>" alt="<%= item.product.title %>">
+            <div class="cart-item-body">
+              <span class="cart-badge"><%= item.product.isBestseller ? 'Хит продаж' : 'Новинка' %></span>
+              <h2><%= item.product.title %></h2>
+              <div class="cart-options">
+                <span><%- icon.size %> Размер: <%= item.variant.size.name %></span>
+                <span><i style="--cart-color:<%= item.variant.color.hex || '#c9ced3' %>"></i> Цвет: <%= item.variant.color.name %></span>
+              </div>
+              <p class="cart-stock"><%- icon.check %> В наличии</p>
+            </div>
+            <div class="cart-item-price cart-unit-price">
+              <strong><%= formatPrice(item.price) %></strong>
+              <span>за единицу</span>
+            </div>
+            <form method="post" action="/cart/update" class="cart-qty-form" aria-label="Количество товара">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="hidden" name="variantId" value="<%= item.variantId %>">
+              <button type="button" data-cart-qty-minus aria-label="Уменьшить">−</button>
+              <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="<%= item.variant.stock %>" aria-label="Количество">
+              <button type="button" data-cart-qty-plus aria-label="Увеличить">+</button>
+            </form>
+            <div class="cart-item-price cart-line-price">
+              <strong><%= formatPrice(item.lineTotal) %></strong>
+            </div>
+            <form method="post" action="/cart/remove" class="cart-remove-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="hidden" name="variantId" value="<%= item.variantId %>">
+              <button type="submit" aria-label="Удалить товар"><%- icon.trash %></button>
+            </form>
+          </article>
+        <% }) %>
+      </section>
+
+      <section class="cart-benefits" aria-label="Преимущества">
+        <div><%- icon.truck %><span><b>Быстрая доставка</b><small>По всей Беларуси</small></span></div>
+        <div><%- icon.refresh %><span><b>Лёгкий возврат</b><small>14 дней на возврат</small></span></div>
+        <div><%- icon.shield %><span><b>Надёжная защита</b><small>До -30°C и защита от ветра</small></span></div>
+      </section>
+
+      <section class="cart-also">
+        <h2>С этим товаром покупают</h2>
+        <div class="cart-also-row">
+          <% recommendedItems.forEach((product, index) => {
+            const variant = product.variants[0];
+          %>
+            <article class="cart-mini-card">
+              <a class="cart-mini-photo" href="/products/<%= product.slug %>"><img src="<%= productPhoto(product, index, ['/uploads/catalog/polar-star.jpg', '/uploads/new-arrival-arctic-blue.png', '/uploads/catalog/midnight-shield.jpg', '/uploads/promo-jacket-new.png']) %>" alt="<%= product.title %>"></a>
+              <div>
+                <a href="/products/<%= product.slug %>"><strong><%= product.title %></strong></a>
+                <span><%= variant.color.name %></span>
+                <b><%= formatPrice(actualPrice(product)) %></b>
+              </div>
+              <form method="post" action="/cart/add" class="cart-mini-add">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="productId" value="<%= product.id %>">
+                <input type="hidden" name="variantId" value="<%= variant.id %>">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" aria-label="Добавить в корзину"><%- icon.bag %></button>
+              </form>
+            </article>
+          <% }) %>
+          <a class="cart-also-next" href="/catalog" aria-label="Смотреть ещё"><%- icon.arrow %></a>
+        </div>
+      </section>
+    </div>
+
+    <aside class="cart-sidebar">
+      <section class="cart-order-card">
+        <h2>Ваш заказ</h2>
+        <form method="post" action="/cart/promocode" class="cart-promo-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input name="code" value="<%= promoCode?.code || '' %>" placeholder="Промокод">
+          <button type="submit">Применить</button>
+        </form>
+        <div class="cart-summary-lines">
+          <p><span>Товары (<%= itemCount %>)</span><strong><%= formatPrice(summary.subtotal) %></strong></p>
+          <p><span>Скидка</span><strong class="cart-discount">-<%= formatPrice(summary.discount) %></strong></p>
+          <p><span>Доставка</span><strong class="cart-free">Бесплатно</strong></p>
+        </div>
+        <div class="cart-total">
+          <span>Итого</span>
+          <strong><%= formatPrice(summary.total) %></strong>
+          <small>Включая НДС <%- icon.info %></small>
+        </div>
+        <a class="cart-checkout-button" href="/checkout">Оформить заказ <%- icon.arrow %></a>
+        <a class="cart-continue-button" href="/catalog">Продолжить покупки</a>
+      </section>
+
+      <section class="cart-payment-card">
+        <h3>Мы принимаем</h3>
+        <div class="cart-pay-logos">
+          <b>VISA</b>
+          <b>mastercard</b>
+          <b> Pay</b>
+          <b>G Pay</b>
+        </div>
+        <div class="cart-secure">
+          <%- icon.lock %>
+          <span><b>Безопасная оплата</b><small>Ваши данные под надёжной защитой</small></span>
+        </div>
+      </section>
+    </aside>
+  </section>
+<% } %>

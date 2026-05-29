@@ -1,0 +1,19 @@
+<div class="section-head"><h1>Личный кабинет</h1><a href="/profile/orders">История заказов</a></div>
+<div class="profile-grid">
+  <form class="panel" method="post" action="/profile">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <h2>Данные</h2>
+    <label>Имя<input name="name" value="<%= user.name %>" required></label>
+    <label>Email<input value="<%= user.email %>" disabled></label>
+    <label>Телефон<input name="phone" value="<%= user.phone || '' %>"></label>
+    <label>Адрес<textarea name="address"><%= user.address || '' %></textarea></label>
+    <button class="button" type="submit">Сохранить</button>
+  </form>
+  <form class="panel" method="post" action="/profile/password">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <h2>Пароль</h2>
+    <label>Текущий пароль<input type="password" name="currentPassword" required></label>
+    <label>Новый пароль<input type="password" name="newPassword" required minlength="8"></label>
+    <button class="button" type="submit">Изменить пароль</button>
+  </form>
+</div>

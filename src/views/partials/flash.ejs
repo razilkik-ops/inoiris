@@ -1,0 +1,6 @@
+<% if (success && success.length) { %>
+  <div class="alerts"><% success.forEach((message) => { %><div class="alert success"><%= message %></div><% }) %></div>
+<% } %>
+<% if (error && error.length) { %>
+  <div class="alerts"><% error.forEach((message) => { %><div class="alert error"><%= message %></div><% }) %></div>
+<% } %>

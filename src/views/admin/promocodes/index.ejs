@@ -1,0 +1,13 @@
+<h1>Промокоды</h1>
+<form class="admin-card form-grid" method="post" action="/admin/promocodes">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Код<input name="code" required></label>
+  <label>Тип<select name="type"><option value="PERCENT">Процент</option><option value="FIXED">Фиксированная</option></select></label>
+  <label>Значение<input type="number" step="0.01" name="value" required></label>
+  <label>Начало<input type="date" name="startsAt" required></label>
+  <label>Конец<input type="date" name="endsAt" required></label>
+  <label>Лимит<input type="number" name="usageLimit"></label>
+  <label class="check"><input type="checkbox" name="isActive" checked> Активен</label>
+  <button class="button" type="submit">Создать</button>
+</form>
+<section class="admin-card"><table><thead><tr><th>Код</th><th>Тип</th><th>Значение</th><th>Использован</th><th>Активен</th><th></th></tr></thead><tbody><% promocodes.forEach((promo) => { %><tr><td><%= promo.code %></td><td><%= promo.type %></td><td><%= promo.value %></td><td><%= promo.usedCount %>/<%= promo.usageLimit || '∞' %></td><td><%= promo.isActive ? 'Да' : 'Нет' %></td><td class="actions"><a href="/admin/promocodes/<%= promo.id %>/edit">Редактировать</a><form method="post" action="/admin/promocodes/<%= promo.id %>/delete"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button danger" type="submit">Удалить</button></form></td></tr><% }) %></tbody></table></section>

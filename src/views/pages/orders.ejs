@@ -1,0 +1,11 @@
+<div class="section-head"><h1>Мои заказы</h1><a href="/profile">Профиль</a></div>
+<section class="panel">
+  <table>
+    <thead><tr><th>№</th><th>Дата</th><th>Статус</th><th>Сумма</th><th></th></tr></thead>
+    <tbody>
+      <% orders.forEach((order) => { %>
+        <tr><td><%= order.id %></td><td><%= order.createdAt.toLocaleDateString('ru-RU') %></td><td><span class="badge"><%= order.status %></span></td><td><%= formatPrice(order.total) %></td><td><a href="/profile/orders/<%= order.id %>">Открыть</a></td></tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>

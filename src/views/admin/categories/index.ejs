@@ -1,0 +1,9 @@
+<h1>Категории</h1>
+<form class="admin-card inline-fields" method="post" action="/admin/categories">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input name="name" placeholder="Название" required>
+  <input name="slug" placeholder="slug">
+  <select name="parentId"><option value="">Без родителя</option><% categories.forEach((category) => { %><option value="<%= category.id %>"><%= category.name %></option><% }) %></select>
+  <button class="button" type="submit">Создать</button>
+</form>
+<section class="admin-card"><table><thead><tr><th>Название</th><th>Slug</th><th>Товары</th><th></th></tr></thead><tbody><% categories.forEach((category) => { %><tr><td><%= category.name %></td><td><%= category.slug %></td><td><%= category._count.products %></td><td class="actions"><a href="/admin/categories/<%= category.id %>/edit">Редактировать</a><form method="post" action="/admin/categories/<%= category.id %>/delete"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button danger" type="submit">Удалить</button></form></td></tr><% }) %></tbody></table></section>

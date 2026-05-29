@@ -1,0 +1,17 @@
+<h1>Dashboard</h1>
+<div class="stats">
+  <div><span>Заказы</span><strong><%= stats.ordersCount %></strong></div>
+  <div><span>Пользователи</span><strong><%= stats.usersCount %></strong></div>
+  <div><span>Товары</span><strong><%= stats.productsCount %></strong></div>
+  <div><span>Продажи</span><strong><%= formatPrice(stats.sales) %></strong></div>
+</div>
+<div class="admin-grid">
+  <section class="admin-card">
+    <h2>Последние заказы</h2>
+    <table><tbody><% latestOrders.forEach((order) => { %><tr><td>#<%= order.id %></td><td><%= order.customerName %></td><td><%= order.status %></td><td><%= formatPrice(order.total) %></td></tr><% }) %></tbody></table>
+  </section>
+  <section class="admin-card">
+    <h2>Низкий остаток</h2>
+    <table><tbody><% lowStock.forEach((variant) => { %><tr><td><%= variant.product.title %></td><td><%= variant.size.name %>/<%= variant.color.name %></td><td><%= variant.stock %></td></tr><% }) %></tbody></table>
+  </section>
+</div>

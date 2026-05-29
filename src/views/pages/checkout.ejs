@@ -1,0 +1,20 @@
+<div class="section-head"><h1>Оформление заказа</h1><span><%= formatPrice(summary.total) %></span></div>
+<div class="checkout-layout">
+  <form class="panel" method="post" action="/checkout">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label>Имя<input name="customerName" value="<%= buyer?.name || '' %>" required></label>
+    <label>Email<input type="email" name="customerEmail" value="<%= buyer?.email || '' %>" required></label>
+    <label>Телефон<input name="customerPhone" value="<%= buyer?.phone || '' %>" required></label>
+    <label>Город<input name="city" required></label>
+    <label>Адрес<input name="address" value="<%= buyer?.address || '' %>" required></label>
+    <label>Доставка<select name="deliveryMethod"><option value="COURIER">Курьер</option><option value="PICKUP_POINT">Пункт выдачи</option><option value="POST">Почта</option></select></label>
+    <label>Оплата<select name="paymentMethod"><option value="CASH_ON_DELIVERY">При получении</option><option value="ONLINE">Онлайн-оплата</option></select></label>
+    <label>Комментарий<textarea name="comment"></textarea></label>
+    <button class="button" type="submit">Подтвердить заказ</button>
+  </form>
+  <aside class="summary panel">
+    <% summary.items.forEach((item) => { %><div><span><%= item.product.title %> × <%= item.quantity %></span><strong><%= formatPrice(item.lineTotal) %></strong></div><% }) %>
+    <% if (promoCode) { %><div><span>Промокод <%= promoCode.code %></span><strong>-<%= formatPrice(summary.discount) %></strong></div><% } %>
+    <div class="total"><span>Итого</span><strong><%= formatPrice(summary.total) %></strong></div>
+  </aside>
+</div>

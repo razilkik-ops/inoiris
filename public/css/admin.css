@@ -1,0 +1,37 @@
+.admin-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; background: #f3f8fc; }
+.admin-sidebar { position: sticky; top: 0; height: 100vh; padding: 22px 16px; background: #1f2f3d; color: #f8fcff; }
+.admin-brand { display: block; margin-bottom: 24px; color: #f8fcff; font-size: 22px; font-weight: 800; }
+.admin-sidebar nav { display: grid; gap: 6px; }
+.admin-sidebar a { color: #f8fcff; padding: 10px 12px; border-radius: 8px; }
+.admin-sidebar a:hover { background: #4fa3d9; color: #f8fcff; }
+.admin-main { padding: 28px; min-width: 0; }
+.admin-head { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 18px; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 22px; }
+.stats div, .admin-card { background: #f8fcff; border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+.stats span { display: block; color: var(--muted); }
+.stats strong { font-size: 28px; }
+.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.thumb { width: 58px; height: 58px; object-fit: cover; border-radius: 8px; }
+.actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+.form-grid .wide { grid-column: 1 / -1; }
+fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+legend { font-weight: 800; padding: 0 6px; }
+.check { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.check input { width: auto; }
+.checks { display: flex; gap: 16px; flex-wrap: wrap; }
+.swatch { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--line); display: inline-block; }
+.image-list { display: flex; gap: 14px; flex-wrap: wrap; }
+.image-list form { width: 160px; display: grid; gap: 8px; }
+.image-list img { width: 160px; height: 160px; object-fit: cover; border-radius: 8px; }
+.inline-fields { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 18px; }
+.inline-fields input, .inline-fields select { width: 220px; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+@media (max-width: 900px) {
+  .admin-shell { grid-template-columns: 1fr; }
+  .admin-sidebar { position: static; height: auto; }
+  .admin-sidebar nav { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .admin-main { padding: 18px; }
+  .stats, .admin-grid, .form-grid, .split { grid-template-columns: 1fr; }
+}

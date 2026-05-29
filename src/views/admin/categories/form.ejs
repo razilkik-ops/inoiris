@@ -1,0 +1,8 @@
+<div class="admin-head"><h1>Редактировать категорию</h1><a href="/admin/categories">Назад</a></div>
+<form class="admin-card form-grid" method="post" action="/admin/categories/<%= category.id %>">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Название<input name="name" value="<%= category.name %>" required></label>
+  <label>Slug<input name="slug" value="<%= category.slug %>" required></label>
+  <label>Родитель<select name="parentId"><option value="">Нет</option><% categories.filter((c) => c.id !== category.id).forEach((c) => { %><option value="<%= c.id %>" <%= category.parentId===c.id?'selected':'' %>><%= c.name %></option><% }) %></select></label>
+  <button class="button" type="submit">Сохранить</button>
+</form>

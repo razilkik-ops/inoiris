@@ -1,0 +1,26 @@
+<div class="admin-head"><h1>Заказ №<%= order.id %></h1><a href="/admin/orders">Назад</a></div>
+<section class="admin-card split">
+  <div>
+    <h2>Покупатель</h2>
+    <p><%= order.customerName %><br><%= order.customerPhone %><br><%= order.customerEmail %></p>
+    <p><%= order.city %>, <%= order.address %></p>
+    <p>Доставка: <%= order.deliveryMethod %>, оплата: <%= order.paymentMethod %></p>
+  </div>
+  <div>
+    <form method="post" action="/admin/orders/<%= order.id %>/status">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label>Статус<select name="status"><% ['NEW','PROCESSING','SHIPPED','DELIVERED','CANCELLED'].forEach((s) => { %><option value="<%= s %>" <%= order.status===s?'selected':'' %>><%= s %></option><% }) %></select></label>
+      <button class="button small" type="submit">Сохранить</button>
+    </form>
+    <form method="post" action="/admin/orders/<%= order.id %>/payment-status">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label>Оплата<select name="paymentStatus"><% ['PENDING','PAID','FAILED','REFUNDED'].forEach((s) => { %><option value="<%= s %>" <%= order.paymentStatus===s?'selected':'' %>><%= s %></option><% }) %></select></label>
+      <button class="button small" type="submit">Сохранить</button>
+    </form>
+  </div>
+</section>
+<section class="admin-card">
+  <h2>Товары</h2>
+  <table><thead><tr><th>Товар</th><th>Размер</th><th>Цвет</th><th>Цена</th><th>Кол-во</th></tr></thead><tbody><% order.items.forEach((item) => { %><tr><td><%= item.title %></td><td><%= item.sizeName %></td><td><%= item.colorName %></td><td><%= formatPrice(item.price) %></td><td><%= item.quantity %></td></tr><% }) %></tbody></table>
+  <div class="summary compact"><div><span>Сумма</span><strong><%= formatPrice(order.subtotal) %></strong></div><div><span>Скидка</span><strong><%= formatPrice(order.discount) %></strong></div><div class="total"><span>Итого</span><strong><%= formatPrice(order.total) %></strong></div></div>
+</section>

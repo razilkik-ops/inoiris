@@ -1,0 +1,14 @@
+<div class="section-head"><h1>Избранное</h1><a href="/catalog">В каталог</a></div>
+<div class="product-grid">
+  <% favorites.forEach((favorite) => { const product = favorite.product; %>
+    <div>
+      <%- include('../partials/product-card', { product }) %>
+      <form method="post" action="/favorites/remove" class="under-card">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="productId" value="<%= product.id %>">
+        <button class="button ghost small" type="submit">Убрать</button>
+      </form>
+    </div>
+  <% }) %>
+</div>
+<% if (!favorites.length) { %><p class="empty">В избранном пока пусто.</p><% } %>

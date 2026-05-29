@@ -1,0 +1,2 @@
+<h1>Пользователи</h1>
+<section class="admin-card"><table><thead><tr><th>Email</th><th>Имя</th><th>Роль</th><th>Заказы</th><th>Статус</th><th></th></tr></thead><tbody><% users.forEach((user) => { %><tr><td><%= user.email %></td><td><%= user.name %></td><td><%= user.role %></td><td><%= user._count.orders %></td><td><%= user.isBlocked ? 'Заблокирован' : 'Активен' %></td><td><a href="/admin/users/<%= user.id %>">Открыть</a></td></tr><% }) %></tbody></table></section>
