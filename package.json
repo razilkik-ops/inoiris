@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "render:start": "prisma migrate deploy && node src/server.js",
+    "render:start": "prisma migrate deploy && node prisma/seed-if-empty.js && node src/server.js",
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
