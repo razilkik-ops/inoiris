@@ -1,6 +1,11 @@
-<% if (success && success.length) { %>
-  <div class="alerts"><% success.forEach((message) => { %><div class="alert success"><%= message %></div><% }) %></div>
+<%
+  const cartAddedMessage = 'Товар добавлен в корзину.';
+  const successMessages = success || [];
+  const errorMessages = error || [];
+%>
+<% if (successMessages.length) { %>
+  <div class="alerts <%= successMessages.every((message) => message === cartAddedMessage) ? 'toast-alerts' : '' %>"><% successMessages.forEach((message) => { %><div class="alert success <%= message === cartAddedMessage ? 'cart-added-toast' : '' %>" <%- message === cartAddedMessage ? 'data-auto-dismiss="true" role="status" aria-live="polite"' : '' %>><%= message %></div><% }) %></div>
 <% } %>
-<% if (error && error.length) { %>
-  <div class="alerts"><% error.forEach((message) => { %><div class="alert error"><%= message %></div><% }) %></div>
+<% if (errorMessages.length) { %>
+  <div class="alerts"><% errorMessages.forEach((message) => { %><div class="alert error"><%= message %></div><% }) %></div>
 <% } %>

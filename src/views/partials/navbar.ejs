@@ -1,22 +1,8 @@
-<nav class="nav">
-  <a href="/catalog">Каталог</a>
-  <a href="/#new">Новинки</a>
-  <a href="/#about">О магазине</a>
-  <a href="/#delivery">Доставка и оплата</a>
-  <a href="/#contacts">Контакты</a>
-</nav>
 <nav class="header-actions" aria-label="Быстрые действия">
   <a href="/catalog" aria-label="Поиск">
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.2-4.2"/></svg>
   </a>
-  <% if (currentUser) { %>
-    <a href="/profile">Профиль</a>
-    <% if (currentUser.role === 'ADMIN') { %><a class="admin-mini-link" href="/admin">Админка</a><% } %>
-    <form action="/logout" method="post" class="inline-form">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button class="link-button" type="submit">Выйти</button>
-    </form>
-  <% } else { %>
+  <% if (!currentUser) { %>
     <a href="/login" aria-label="Вход">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4.2 5-6 8-6s6.2 1.8 8 6"/></svg>
     </a>
@@ -25,4 +11,28 @@
     <svg viewBox="0 0 24 24"><path d="M7 8h10l1 13H6L7 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
     <span><%= cartCount || 0 %></span>
   </a>
+</nav>
+<details class="header-menu" data-menu-details>
+  <summary class="menu-toggle" aria-label="Меню">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 7h16M4 12h16M4 17h16"/>
+    </svg>
+  </summary>
+</details>
+<nav class="nav" id="site-menu" aria-label="Основное меню" data-site-menu>
+  <a href="/catalog">Каталог</a>
+  <a href="/#new">Новинки</a>
+  <a href="/#about">О магазине</a>
+  <a href="/#delivery">Доставка и оплата</a>
+  <a href="/#contacts">Контакты</a>
+  <% if (currentUser) { %>
+    <a href="/profile">Профиль</a>
+    <% if (currentUser.role === 'ADMIN') { %><a href="/admin">Админка</a><% } %>
+    <form action="/logout" method="post" class="nav-logout-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit">Выйти</button>
+    </form>
+  <% } else { %>
+    <a href="/login">Войти</a>
+  <% } %>
 </nav>

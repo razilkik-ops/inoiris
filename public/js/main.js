@@ -12,9 +12,85 @@ document.querySelectorAll('.alert').forEach((alert) => {
   close.setAttribute('aria-label', 'Закрыть уведомление');
   close.dataset.alertClose = 'true';
   close.textContent = '×';
-  close.addEventListener('click', () => alert.remove());
+  let isDismissed = false;
+  const dismissAlert = () => {
+    if (isDismissed) return;
+    isDismissed = true;
+    alert.classList.add('is-hiding');
+    window.setTimeout(() => {
+      const alerts = alert.parentElement;
+      alert.remove();
+      if (alerts?.classList.contains('alerts') && !alerts.querySelector('.alert')) {
+        alerts.remove();
+      }
+    }, 220);
+  };
+  close.addEventListener('click', dismissAlert);
   alert.append(close);
+
+  if (alert.dataset.autoDismiss === 'true') {
+    window.setTimeout(dismissAlert, 3200);
+  }
 });
+
+document.querySelectorAll('.auth-eye').forEach((button) => {
+  const input = button.closest('.auth-input-wrap')?.querySelector('input');
+  if (!input) return;
+
+  button.addEventListener('click', () => {
+    const isPassword = input.type === 'password';
+    input.type = isPassword ? 'text' : 'password';
+    button.setAttribute('aria-label', isPassword ? 'Скрыть пароль' : 'Показать пароль');
+  });
+});
+
+const menuDetails = document.querySelector('[data-menu-details]');
+const siteMenu = document.querySelector('[data-site-menu]');
+if (menuDetails && siteMenu) {
+  const closeMenu = () => {
+    menuDetails.removeAttribute('open');
+  };
+
+  siteMenu.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    closeMenu();
+    menuDetails.querySelector('summary')?.focus();
+  });
+}
+
+const filterShell = document.querySelector('[data-filter-shell]');
+if (filterShell) {
+  const filterToggle = filterShell.querySelector('[data-filter-toggle]');
+  const filterCard = filterShell.querySelector('.catalog-filter-card');
+
+  const setFilterOpen = (isOpen) => {
+    filterShell.classList.toggle('is-open', isOpen);
+    filterToggle?.setAttribute('aria-expanded', String(isOpen));
+  };
+
+  filterToggle?.addEventListener('click', () => {
+    setFilterOpen(!filterShell.classList.contains('is-open'));
+  });
+
+  filterShell.querySelector('[data-filter-close]')?.addEventListener('click', () => {
+    setFilterOpen(false);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!filterShell.classList.contains('is-open')) return;
+    if (filterCard?.contains(event.target) || filterToggle?.contains(event.target)) return;
+    setFilterOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    setFilterOpen(false);
+  });
+}
 
 document.querySelectorAll('.cart-qty-form').forEach((form) => {
   const input = form.querySelector('input[name="quantity"]');
