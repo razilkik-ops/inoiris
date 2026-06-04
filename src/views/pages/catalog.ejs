@@ -145,10 +145,10 @@
             <form method="post" action="/favorites/add" class="catalog-heart">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <input type="hidden" name="productId" value="<%= product.id %>">
-              <button type="submit" aria-label="В избранное">♡</button>
+              <button type="submit" aria-label="В избранное"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></button>
             </form>
           <% } else { %>
-            <a class="catalog-heart guest" href="/login" aria-label="В избранное">♡</a>
+            <a class="catalog-heart guest" href="/login" aria-label="В избранное"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></a>
           <% } %>
           <div class="catalog-product-info">
             <a href="/products/<%= product.slug %>"><%= product.title %></a>
